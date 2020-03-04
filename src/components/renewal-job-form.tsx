@@ -4,6 +4,8 @@ import { ScraperCrossRequest } from "./renewal-job-types";
 
 import styles from './renewal-job-form.module.css';
 
+const tokenCacheKey = 'supervisor-scraper-job-queue:renewal-job-form:token';
+
 const inputList = [
     { name: 'orgId', type: 'text' },
     { name: 'orgName', type: 'text' },
@@ -14,7 +16,7 @@ const inputList = [
     { name: 'lastProgress.page', type: 'number' },
     { name: 'lastProgress.processedSession', type: 'number' },
     { name: 'lastReviewPage', type: 'url' },
-    
+
     { name: 'token', type: 'text' }
 ]
 
@@ -32,7 +34,7 @@ const initialValues = {
     'lastReviewPage': 'https://www.glassdoor.com/Reviews/Apple-Reviews-E1138_P461.htm',
     'scrapeMode': 'renewal',
     
-    'token': ''
+    'token': localStorage.getItem(tokenCacheKey) || ''
 }
 
 const formSubmit = async (values: typeof initialValues, { setSubmitting }: FormikHelpers<typeof initialValues>) => {
@@ -50,6 +52,9 @@ const formSubmit = async (values: typeof initialValues, { setSubmitting }: Formi
 
     if (res.status === 200) {
         const json = await res.json();
+
+        localStorage.setItem(tokenCacheKey, values.token);
+
         alert('Submit success! Job number ' + json.id);
         setSubmitting(false);
         return json;
