@@ -5,21 +5,22 @@ import {
   Route,
   Link
 } from "react-router-dom";
+import { ResumeJob } from "./pages/resume-job";
+
+import styles from './App.module.css';
 
 export default function App() {
   return (
     <Router>
-      <div>
+      <div className={styles.App}>
+        <h2>Navigation</h2>
         <nav>
           <ul>
             <li>
               <Link to="/">Home</Link>
             </li>
             <li>
-              <Link to="/about">About</Link>
-            </li>
-            <li>
-              <Link to="/users">Users</Link>
+              <Link to="/resume-job">Resume Job</Link>
             </li>
           </ul>
         </nav>
@@ -27,11 +28,8 @@ export default function App() {
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
         <Switch>
-          <Route path="/about">
-            <About />
-          </Route>
-          <Route path="/users">
-            <Users />
+          <Route path="/resume-job">
+            <ResumeJob />
           </Route>
           <Route path="/">
             <Home />
@@ -43,13 +41,10 @@ export default function App() {
 }
 
 function Home() {
-  return <h2>Home</h2>;
-}
-
-function About() {
-  return <h2>About</h2>;
-}
-
-function Users() {
-  return <h2>Users</h2>;
+  return <>
+    <h2>Home</h2>
+    <p>
+      This is the supervisor scraper frontend
+    </p>
+  </>;
 }
