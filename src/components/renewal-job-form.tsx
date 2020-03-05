@@ -7,6 +7,7 @@ import styles from './renewal-job-form.module.css';
 const tokenCacheKey = 'supervisor-scraper-job-queue:renewal-job-form:token';
 
 const inputList = [
+    { name: 'orgInfo', type: 'text' },
     { name: 'orgId', type: 'text' },
     { name: 'orgName', type: 'text' },
     { name: 'lastProgress.processed', type: 'number' },
@@ -17,10 +18,12 @@ const inputList = [
     { name: 'lastProgress.processedSession', type: 'number' },
     { name: 'lastReviewPage', type: 'url' },
 
+    { name: 'port', type: 'text' },
     { name: 'token', type: 'text' }
 ]
 
 const initialValues = {
+    'orgInfo': '',
     'orgId': '1138',
     'orgName': 'Apple',
     'lastProgress': {
@@ -34,13 +37,14 @@ const initialValues = {
     'lastReviewPage': 'https://www.glassdoor.com/Reviews/Apple-Reviews-E1138_P461.htm',
     'scrapeMode': 'renewal',
     
+    'port': '61226',
     'token': localStorage.getItem(tokenCacheKey) || ''
 }
 
 const formSubmit = async (values: typeof initialValues, { setSubmitting }: FormikHelpers<typeof initialValues>) => {
     const res = await fetch((window.location.href.startsWith('https') ?
         `https://slack.api.shaungc.com/queues/single-org-renewal-job?` : 
-        `http://localhost:55564/queues/single-org-renewal-job?`) + new URLSearchParams({
+        `http://localhost:${values.port}/queues/single-org-renewal-job?`) + new URLSearchParams({
         'token': values.token
     }), {
         method: 'POST',
@@ -83,7 +87,7 @@ export const RenewalJobForm = (props: RenewalJobFormProps) => {
     
 
     return <div className={styles.renewalForm}>
-        <h1>Create a Renewal Job</h1>
+        <h1>Create a New or Renewal Job</h1>
         <Formik
             initialValues={initialValues}
             validate={values => {
