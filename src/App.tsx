@@ -8,6 +8,9 @@ import {
 import { ResumeJob } from "./pages/resume-job";
 
 import styles from './App.module.css';
+import { Home } from "./pages/home";
+import { LoginPage } from "./pages/login";
+import { ControlPanelPage } from "./pages/control-panel.page";
 
 export default function App() {
   return (
@@ -20,7 +23,13 @@ export default function App() {
               <Link to="/">Home</Link>
             </li>
             <li>
+              <Link to="/login">Login</Link>
+            </li>
+            <li>
               <Link to="/resume-job">Resume Job</Link>
+            </li>
+            <li>
+              <Link to="/control-panel">Control Panel</Link>
             </li>
           </ul>
         </nav>
@@ -31,6 +40,12 @@ export default function App() {
           <Route path="/resume-job">
             <ResumeJob />
           </Route>
+          <Route path="/control-panel">
+            <ControlPanelPage />
+          </Route>
+          <Route path="/login">
+            <LoginPage />
+          </Route>
           <Route path="/">
             <Home />
           </Route>
@@ -40,11 +55,4 @@ export default function App() {
   );
 }
 
-function Home() {
-  return <>
-    <h2>Home</h2>
-    <p>
-      This is the supervisor scraper frontend
-    </p>
-  </>;
-}
+

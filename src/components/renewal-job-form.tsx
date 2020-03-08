@@ -1,8 +1,10 @@
 import React from "react";
-import { Formik, FormikValues, FormikHelpers } from 'formik';
+import { Formik, FormikHelpers } from 'formik';
 import { ScraperCrossRequest } from "./renewal-job-types";
+import { getNestedValueFromName } from "../utilities/formUtilities";
 
 import styles from './renewal-job-form.module.css';
+import { Authenticator } from "../services/authenticate";
 
 const tokenCacheKey = 'supervisor-scraper-job-queue:renewal-job-form:token';
 
@@ -37,8 +39,8 @@ const initialValues = {
     'lastReviewPage': 'https://www.glassdoor.com/Reviews/Apple-Reviews-E1138_P461.htm',
     'scrapeMode': 'renewal',
     
-    'port': '61226',
-    'token': localStorage.getItem(tokenCacheKey) || ''
+    'port': Authenticator.port,
+    'token': Authenticator.token
 }
 
 const formSubmit = async (values: typeof initialValues, { setSubmitting }: FormikHelpers<typeof initialValues>) => {
@@ -67,16 +69,7 @@ const formSubmit = async (values: typeof initialValues, { setSubmitting }: Formi
     }
 }
 
-const getNestedValueFromName = (values: FormikValues, name: string) => {
-    const [mainField, ...subFields] = name.split('.');
 
-    return subFields.reduce((acc, cur) => {
-        if (!acc) {
-            return acc;
-        }
-        return acc[cur];
-    }, values[mainField]);
-}
 
 export interface RenewalJobFormProps {
     onReceiveResponse?: (res: any) => void
@@ -84,12 +77,13 @@ export interface RenewalJobFormProps {
 
 // https://jaredpalmer.com/formik/docs/overview
 export const RenewalJobForm = (props: RenewalJobFormProps) => {
-    
-
     return <div className={styles.renewalForm}>
-        <h1>Create a New or Renewal Job</h1>
         <Formik
-            initialValues={initialValues}
+            initialValues={{
+                ...initialValues,
+                token: Authenticator.token,
+                port: Authenticator.port
+            }}
             validate={values => {
                 const formValidateResult = ScraperCrossRequest.validate(values);
                 return formValidateResult;
