@@ -11,6 +11,8 @@ import styles from './App.module.css';
 import { Home } from "./pages/home";
 import { LoginPage } from "./pages/login";
 import { ControlPanelPage } from "./pages/control-panel.page";
+import { Authenticator } from "./services/authenticate";
+import { apiService } from "./services/apiService";
 
 export default function App() {
   return (
@@ -30,6 +32,11 @@ export default function App() {
             </li>
             <li>
               <Link to="/control-panel">Control Panel</Link>
+            </li>
+            <li>
+              <a target="_blank" href={`${process.env.NODE_ENV === 'production' ?
+                apiService.PRODUCTION_API_SERVER_BASE_URL :
+                apiService.developmentApiServerBaseUrl}/dashboard?token=${Authenticator.token}`}>Job Queue Dashboard</a>
             </li>
           </ul>
         </nav>

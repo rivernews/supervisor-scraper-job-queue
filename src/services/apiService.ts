@@ -3,8 +3,8 @@ import { Authenticator } from "./authenticate";
 class ApiSevice {
     private static _singleton: ApiSevice;
 
-    private static PRODUCTION_API_SERVER_BASE_URL = 'https://slack.api.shaungc.com';
-    private static DEVELOPMENT_API_SERVER_BASE_URL = 'http://localhost';
+    public PRODUCTION_API_SERVER_BASE_URL = '//slack.api.shaungc.com';
+    private static DEVELOPMENT_API_SERVER_BASE_URL = '//localhost';
 
     private constructor() {}
 
@@ -15,14 +15,14 @@ class ApiSevice {
         return ApiSevice._singleton;
     }
 
-    private getDevelopmentApiServerBaseUrl() {
+    public get developmentApiServerBaseUrl() {
         return `${ApiSevice.DEVELOPMENT_API_SERVER_BASE_URL}:${Authenticator.port}`
     }
 
     private get baseUrl() {
         return process.env.NODE_ENV === 'production' ?
-            ApiSevice.PRODUCTION_API_SERVER_BASE_URL :
-            this.getDevelopmentApiServerBaseUrl()
+            this.PRODUCTION_API_SERVER_BASE_URL :
+            this.developmentApiServerBaseUrl
     }
 
     public async asyncTerminateAllJob() {
