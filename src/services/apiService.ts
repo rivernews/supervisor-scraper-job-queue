@@ -25,8 +25,7 @@ class ApiSevice {
             this.developmentApiServerBaseUrl
     }
 
-    public async asyncTerminateAllJob() {
-        const endpoint = '/queues/terminate-all-jobs';
+    private async asyncPost(endpoint: string, logPrefix: string) {
         const url = `${this.baseUrl}${endpoint}?` + new URLSearchParams({
             token: Authenticator.token
         });
@@ -40,13 +39,25 @@ class ApiSevice {
 
             if (res.status !== 200) {
                 console.error(res);
-                throw new Error(`Terminate all job request failed: ${res.status}, ${res.statusText}`);
+                throw new Error(`${logPrefix} request failed: ${res.status}, ${res.statusText}`);
             } else {
                 return res.json();
             }
         } catch (error) {
             throw error;
         }
+    }
+
+    public async asyncTerminateAllJobs() {
+        return await this.asyncPost('/queues/terminate-all-jobs', 'Terminate all job');
+    }
+
+    public async asyncResumeAllQueues() {
+        return this.asyncPost('/queues/resume-all-queues', 'Resume all queues');
+    }
+
+    public async asyncPauseAllQueues() {
+        return this.asyncPost('/queues/pause-all-queues', 'Pause all queues');
     }
 }
 
