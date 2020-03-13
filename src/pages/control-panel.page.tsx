@@ -8,22 +8,34 @@ export function ControlPanelPage() {
 
         <button disabled={submitting} type="button" onClick={async () => {
             setSubmitting(true);
-            const res = await apiService.asyncTerminateAllJobs();
-            alert(JSON.stringify(res));
+            try {
+                const res = await apiService.asyncTerminateAllJobs();
+                alert(JSON.stringify(res));
+            } catch (error) {
+                alert(JSON.stringify(error));
+            }
             setSubmitting(false);
         }}>Terminate All Jobs</button>
 
         <button disabled={submitting} type="button" onClick={async () => {
             setSubmitting(true);
-            const res = await apiService.asyncResumeAllQueues();
-            alert(JSON.stringify(res));
+            try {
+                const res = await apiService.asyncResumeAllQueues();
+                alert(JSON.stringify(res));
+            } catch (error) {
+                alert(JSON.stringify(error));
+            } 
             setSubmitting(false);
         }}>Resume All Jobs</button>
 
         <button disabled={submitting} type="button" onClick={async () => {
             setSubmitting(true);
-            const res = await apiService.asyncPauseAllQueues();
-            alert(JSON.stringify(res));
+            try {
+                const res = await apiService.asyncPauseAllQueues();
+                alert(JSON.stringify(res));
+            } catch (error) {
+                alert(JSON.stringify(error));
+            }
             setSubmitting(false);
         }}>Pause All Jobs</button>
 
