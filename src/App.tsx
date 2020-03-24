@@ -34,7 +34,7 @@ export default function App() {
               <Link to="/control-panel">Control Panel</Link>
             </li>
             <li>
-              <a target="_blank" href={`${process.env.NODE_ENV === 'production' ?
+              <a target="_blank" rel="noopener noreferrer" href={`${process.env.NODE_ENV === 'production' ?
                 apiService.PRODUCTION_API_SERVER_BASE_URL :
                 apiService.developmentApiServerBaseUrl}/dashboard?token=${Authenticator.token}`}>Job Queue Dashboard</a>
             </li>
