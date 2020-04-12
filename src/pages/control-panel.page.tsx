@@ -24,7 +24,7 @@ export function ControlPanelPage() {
                 alert(JSON.stringify(res));
             } catch (error) {
                 alert(JSON.stringify(error));
-            } 
+            }
             setSubmitting(false);
         }}>Resume All Jobs</button>
 
@@ -38,6 +38,17 @@ export function ControlPanelPage() {
             }
             setSubmitting(false);
         }}>Pause All Jobs</button>
+
+        <button disabled={submitting} type="button" onClick={async () => {
+            setSubmitting(true);
+            try {
+                const res = await apiService.asyncStartS3Job();
+                alert(JSON.stringify(res));
+            } catch (error) {
+                alert('Error: ' + JSON.stringify(error));
+            }
+            setSubmitting(false);
+        }}>Start S3 Job</button>
 
     </>
 }

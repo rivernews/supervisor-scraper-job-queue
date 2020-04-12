@@ -59,6 +59,10 @@ class ApiSevice {
     public async asyncPauseAllQueues() {
         return this.asyncPost('/queues/pause-all-queues', 'Pause all queues');
     }
+
+    public async asyncStartS3Job() {
+        return this.asyncPost(`/queues/s3-orgs-job`, 'Start S3 Job');
+    }
 }
 
 export const apiService = ApiSevice.singleton;
