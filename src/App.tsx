@@ -13,6 +13,7 @@ import { LoginPage } from "./pages/login";
 import { ControlPanelPage } from "./pages/control-panel.page";
 import { Authenticator } from "./services/authenticate";
 import { apiService } from "./services/apiService";
+import { NodeScalingPage } from "./pages/node-scaling.page";
 
 export default function App() {
   return (
@@ -28,15 +29,18 @@ export default function App() {
               <Link to="/login">Login</Link>
             </li>
             <li>
+              <Link to="/k8s">Node scaling</Link>
+            </li>
+            <li>
               <Link to="/resume-job">Resume Job</Link>
             </li>
             <li>
-              <Link to="/control-panel">Control Panel</Link>
+              <Link to="/control-panel">Job Control Panel</Link>
             </li>
             <li>
               <a href={`${process.env.NODE_ENV === 'production' ?
                 apiService.PRODUCTION_API_SERVER_BASE_URL :
-                apiService.developmentApiServerBaseUrl}/dashboard?token=${Authenticator.token}`}>Job Queue Dashboard</a>
+                apiService.developmentApiServerBaseUrl}/dashboard?token=${Authenticator.token}`}>Bull Job Queue Dashboard</a>
             </li>
           </ul>
         </nav>
@@ -49,6 +53,9 @@ export default function App() {
           </Route>
           <Route path="/control-panel">
             <ControlPanelPage />
+          </Route>
+          <Route path="/k8s">
+            <NodeScalingPage />
           </Route>
           <Route path="/login">
             <LoginPage />
