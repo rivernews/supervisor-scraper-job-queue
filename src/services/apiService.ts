@@ -1,5 +1,5 @@
 import { Authenticator } from "./authenticate";
-import { KubernetesNodePool } from "../types/k8s.types";
+import { KubernetesNodePool, NodeInstanceSize } from "../types/k8s.types";
 
 class ApiSevice {
     private static _singleton: ApiSevice;
@@ -26,7 +26,7 @@ class ApiSevice {
             this.developmentApiServerBaseUrl
     }
 
-    private asyncRequest = async (endpoint: string, logPrefix: string, method: 'POST' | 'GET' | 'DELETE' = 'POST') => {
+    private asyncRequest = async (endpoint: string, logPrefix: string, method: 'POST' | 'GET' | 'DELETE' = 'POST', POSTData?: {[key: string]: any}) => {
         const url = `${this.baseUrl}${endpoint}?` + new URLSearchParams({
             token: Authenticator.token
         });
@@ -34,7 +34,13 @@ class ApiSevice {
         try {
             const res = await fetch(
                 url, {
-                    method
+                    method,
+                    ...(method === 'POST' && POSTData ? {
+                        body: JSON.stringify(POSTData)
+                    } : {}),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
                 }
             );
 
@@ -64,8 +70,8 @@ class ApiSevice {
         return this.asyncRequest(`/queues/s3-orgs-job`, 'Start S3 Job');
     }
 
-    public asyncCreateNode = () => {
-        return this.asyncRequest(`/k8s/create-node`, `Create node`)
+    public asyncCreateNode = (size: NodeInstanceSize) => {
+        return this.asyncRequest(`/k8s/create-node`, `Create node`, 'POST', { size })
     }
 
     public asyncListNodes = async () => {

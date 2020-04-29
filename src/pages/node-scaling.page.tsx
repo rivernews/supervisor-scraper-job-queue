@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { apiService } from "../services/apiService";
-import { KubernetesNode, SeleniumMicroservice, } from "../types/k8s.types";
+import { KubernetesNode, SeleniumMicroservice, NodeInstanceSize, } from "../types/k8s.types";
 
 export function NodeScalingPage() {
     return (<>
@@ -12,7 +12,7 @@ export function NodeScalingPage() {
 
 const apiRequestHandler = async (
     actionName: string,
-    apiServiceFunction: () => Promise<any>,
+    apiServiceFunction: (() => Promise<any>) | [(...args: any[]) => Promise<any>, ...any[]],
     setStateFunction?: React.Dispatch<React.SetStateAction<any>>,
     setResponseFunction?: React.Dispatch<React.SetStateAction<string>>,
     setSubmitting?: (value: boolean) => void
@@ -20,7 +20,13 @@ const apiRequestHandler = async (
     const timestamp = new Date();
     setSubmitting && setSubmitting(true);
     try {
-        const resultObjects = await apiServiceFunction();
+        let resultObjects: any;
+        if (!Array.isArray(apiServiceFunction) ) {
+            resultObjects = await apiServiceFunction();
+        } else {
+            const [apiServiceFunc, ...apiServiceFuncArgs] = apiServiceFunction;
+            resultObjects = await apiServiceFunc(...apiServiceFuncArgs);
+        }
         console.log(actionName, resultObjects);
         setStateFunction && setStateFunction(resultObjects);
         setResponseFunction && setResponseFunction(`${actionName} Status: OK ${JSON.stringify(resultObjects)} -- ${timestamp}`);
@@ -72,7 +78,7 @@ const polling = (
 
 const PollingToggleComponent = (
     disablePollingState: boolean,
-    setDisablePollingState: (value: React.SetStateAction<boolean>) => void
+    setDisablePollingState: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
     return (<div>
         <button onClick={() => setDisablePollingState(!disablePollingState)}>Toggle polling</button>
@@ -81,10 +87,26 @@ const PollingToggleComponent = (
 }
 
 
+const NodeSizeSelector = (initialValue: NodeInstanceSize, setNodeInstanceSize: React.Dispatch<React.SetStateAction<NodeInstanceSize>>) => {
+
+    const handleOnChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setNodeInstanceSize(event.target.value as NodeInstanceSize)
+    }
+
+    return (
+        <select onChange={handleOnChange} value={initialValue}>
+            <option value="MEDIUM">Medium - 4G RAM</option>
+            <option value="LARGE">Large - 8G RAM</option>
+        </select>
+    )
+}
+
+
 export function NodeScalingPanel() {
     const [submitting, setSubmitting] = useState(false);
     const [nodes, setNodes] = useState<KubernetesNode[]>([]);
     const [disablePolling, setDisablePolling] = useState(true);
+    const [nodeInstanceSize, setNodeInstanceSize] = useState<NodeInstanceSize>('MEDIUM');
 
     const [createNodeResponse, setCreateNodeResponse] = useState('--');
     const [deleteAllNodesResponse, setDeleteAllNodesResponse] = useState('--');
@@ -114,7 +136,7 @@ export function NodeScalingPanel() {
     const handleClickCreateNode = () => {
         return apiRequestHandler(
             `CreateNode`,
-            apiService.asyncCreateNode,
+            [apiService.asyncCreateNode, nodeInstanceSize],
             undefined,
             setCreateNodeResponse,
             setSubmitting
@@ -134,6 +156,7 @@ export function NodeScalingPanel() {
     return <>
         <h2>Node Scaling</h2>
         <div>
+            <div>{NodeSizeSelector(nodeInstanceSize, setNodeInstanceSize)}</div>
             <button disabled={submitting} type="button" onClick={handleClickCreateNode}>Create node</button>
             <div>
                 {createNodeResponse}

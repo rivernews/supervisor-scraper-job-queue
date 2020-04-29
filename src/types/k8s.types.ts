@@ -35,3 +35,5 @@ export interface SeleniumMicroservice {
     serviceResult: KubernetesClientResponse<KubernetesService>;
     errors: Error[];
 }
+
+export type NodeInstanceSize = 'MEDIUM' | 'LARGE';
