@@ -95,10 +95,12 @@ const NodeSizeSelector = (initialValue: NodeInstanceSize, setNodeInstanceSize: R
 
     return (
         <select onChange={handleOnChange} value={initialValue}>
-            <option value="MEDIUM">Medium - 4G RAM</option>
-            <option value="LARGE">Large - 8G RAM</option>
-            <option value="LARGE_16G">Large - 4CPU/16G RAM</option>
-            <option value="MEMORY_2CPU">Memory Optimized - 2CPU/16G RAM</option>
+            <option value="MEDIUM">Medium - 4G RAM, $20</option>
+            <option value="LARGE">Large - 8G RAM, $40</option>
+            <option value="LARGE_16G">Large - 6CPU/16G RAM, $80</option>
+            <option value="MEMORY_2CPU">Memory Optimized - 2CPU/16G RAM, $75</option>
+            <option value="CPU_4CPU">CPU Optimized - 4CPU/8G RAM, $80</option>
+            <option value="CPU_2CPU">CPU Optimized - 2CPU/4G RAM, $40</option>
         </select>
     )
 }
