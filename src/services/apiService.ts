@@ -1,5 +1,5 @@
 import { Authenticator } from "./authenticate";
-import { KubernetesNodePool, NodeInstanceSize } from "../types/k8s.types";
+import { KubernetesNodePool } from "../types/k8s.types";
 
 class ApiSevice {
     private static _singleton: ApiSevice;
@@ -17,13 +17,13 @@ class ApiSevice {
     }
 
     public get developmentApiServerBaseUrl() {
-        return `${ApiSevice.DEVELOPMENT_API_SERVER_BASE_URL}:${Authenticator.port}`
+        return `${ApiSevice.DEVELOPMENT_API_SERVER_BASE_URL}`
     }
 
     private get baseUrl () {
         return process.env.NODE_ENV === 'production' ?
             this.PRODUCTION_API_SERVER_BASE_URL :
-            this.developmentApiServerBaseUrl
+            `${this.developmentApiServerBaseUrl}:${Authenticator.port}`
     }
 
     private asyncRequest = async (endpoint: string, logPrefix: string, method: 'POST' | 'GET' | 'DELETE' = 'POST', POSTData?: {[key: string]: any}) => {
@@ -70,7 +70,7 @@ class ApiSevice {
         return this.asyncRequest(`/queues/s3-orgs-job`, 'Start S3 Job');
     }
 
-    public asyncCreateNode = (size: NodeInstanceSize) => {
+    public asyncCreateNode = (size: string) => {
         return this.asyncRequest(`/k8s/create-node`, `Create node`, 'POST', { size })
     }
 
@@ -92,8 +92,8 @@ class ApiSevice {
         return this.asyncRequest(`/k8s/selenium`, `Get selenium`, 'GET');
     }
 
-    public asyncProvisionSeleniumMicroservice = () => {
-        return this.asyncRequest(`/k8s/selenium`, `Provision selenium`, 'POST');
+    public asyncProvisionSeleniumMicroservice = (provisionType: string) => {
+        return this.asyncRequest(`/k8s/selenium`, `Provision selenium`, 'POST', { provisionType });
     }
 
     public asyncDestroySeleniumMicroservice = () => {

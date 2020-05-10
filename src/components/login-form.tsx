@@ -2,33 +2,45 @@ import React from "react";
 import { FormikHelpers, Formik } from "formik";
 import { getNestedValueFromName } from "../utilities/formUtilities";
 import { Authenticator } from "../services/authenticate";
+import { AuthCredentials } from "../types/auth.types";
+import { useAppContext } from "../services/appService";
 
 const inputList = [
     { name: 'token', type: 'text' },
     { name: 'port', type: 'text' },
 ]
 
-const formSubmit = async (values: { 'token': string, 'port': string }, { setSubmitting }: FormikHelpers<{ 'token': string, 'port': string }>) => {
-    const tokenValue = values.token.trim();
-    const portValue = values.port.trim();
-
-    if (tokenValue !== '') {
-        Authenticator.token = tokenValue;
-    }
-
-    if (portValue !== '') {
-        Authenticator.port = portValue;
-    }
-
-    alert('Credentials stored');
-
-    setSubmitting(false);
-}
-
 export const LoginForm = () => {
-    const initialValues = {
+    const { authCredentials, setAuthCredentials } = useAppContext();
+
+    const initialValues: AuthCredentials = authCredentials ? authCredentials : {
         'token': Authenticator.token,
         'port': Authenticator.port
+    };
+
+    // click handlers
+
+    const formSubmit = async (values: AuthCredentials, { setSubmitting }: FormikHelpers<AuthCredentials>) => {
+        const tokenValue = values.token.trim();
+        const portValue = values.port.trim();
+    
+        if (tokenValue !== '') {
+            Authenticator.token = tokenValue;
+        }
+    
+        if (portValue !== '') {
+            Authenticator.port = portValue;
+        }
+    
+        alert('Credentials stored');
+    
+        // store in React Context API
+        setAuthCredentials && setAuthCredentials({
+            token: tokenValue || '',
+            port: portValue || ''
+        });
+    
+        setSubmitting(false);
     }
 
     return <div>

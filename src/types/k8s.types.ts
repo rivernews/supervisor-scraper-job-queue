@@ -31,9 +31,8 @@ interface KubernetesService {
 }
 
 export interface SeleniumMicroservice {
-    deploymentResult: KubernetesClientResponse<KubernetesDeployment>;
+    hubDeploymentResult: KubernetesClientResponse<KubernetesDeployment>;
+    chromeNodeDeploymentResult: KubernetesClientResponse<KubernetesDeployment>;
     serviceResult: KubernetesClientResponse<KubernetesService>;
     errors: Error[];
 }
-
-export type NodeInstanceSize = 'MEDIUM' | 'LARGE';

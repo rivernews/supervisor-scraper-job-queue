@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { apiService } from "../services/apiService";
-import { KubernetesNode, SeleniumMicroservice, NodeInstanceSize, } from "../types/k8s.types";
+import { KubernetesNode, SeleniumMicroservice } from "../types/k8s.types";
 
 export function NodeScalingPage() {
     return (<>
@@ -21,7 +21,7 @@ const apiRequestHandler = async (
     setSubmitting && setSubmitting(true);
     try {
         let resultObjects: any;
-        if (!Array.isArray(apiServiceFunction) ) {
+        if (!Array.isArray(apiServiceFunction)) {
             resultObjects = await apiServiceFunction();
         } else {
             const [apiServiceFunc, ...apiServiceFuncArgs] = apiServiceFunction;
@@ -87,10 +87,10 @@ const PollingToggleComponent = (
 }
 
 
-const NodeSizeSelector = (initialValue: NodeInstanceSize, setNodeInstanceSize: React.Dispatch<React.SetStateAction<NodeInstanceSize>>) => {
+const NodeSizeSelector = (initialValue: string, setNodeInstanceSize: React.Dispatch<React.SetStateAction<string>>) => {
 
     const handleOnChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setNodeInstanceSize(event.target.value as NodeInstanceSize)
+        setNodeInstanceSize(event.target.value as string)
     }
 
     return (
@@ -110,7 +110,7 @@ export function NodeScalingPanel() {
     const [submitting, setSubmitting] = useState(false);
     const [nodes, setNodes] = useState<KubernetesNode[]>([]);
     const [disablePolling, setDisablePolling] = useState(true);
-    const [nodeInstanceSize, setNodeInstanceSize] = useState<NodeInstanceSize>('MEDIUM');
+    const [nodeInstanceSize, setNodeInstanceSize] = useState<string>('MEDIUM');
 
     const [createNodeResponse, setCreateNodeResponse] = useState('--');
     const [deleteAllNodesResponse, setDeleteAllNodesResponse] = useState('--');
@@ -198,7 +198,8 @@ export function NodeScalingPanel() {
 export const SeleniumMicroserviceScalingPanel = () => {
     const [submitting, setSubmitting] = useState(false);
     const [seleniumMicroservice, setSeleniumMicroservice] = useState<SeleniumMicroservice | undefined>(undefined);
-    const [provisionSeleniumResponse, setProvisionGetSeleniumResponse] = useState('--');
+    const [provisionSeleniumHubResponse, setProvisionGetSeleniumHubResponse] = useState('--');
+    const [provisionSeleniumChromeNodeResponse, setProvisionGetSeleniumChromeNodeResponse] = useState('--');
     const [destroySeleniumResponse, setDestroyGetSeleniumResponse] = useState('--');
     const [disablePolling, setDisablePolling] = useState(true);
 
@@ -220,11 +221,18 @@ export const SeleniumMicroserviceScalingPanel = () => {
             setSubmitting
         );
     };
-    const handleClickProvisionSelenium = () => apiRequestHandler(
-        `ProvisionSelenium`,
-        apiService.asyncProvisionSeleniumMicroservice,
+    const handleClickProvisionSeleniumHub = () => apiRequestHandler(
+        `ProvisionSeleniumHub`,
+        [apiService.asyncProvisionSeleniumMicroservice, 'hub'],
         undefined,
-        setProvisionGetSeleniumResponse,
+        setProvisionGetSeleniumHubResponse,
+        setSubmitting
+    );
+    const handleClickProvisionSeleniumChromeNode = () => apiRequestHandler(
+        `ProvisionSeleniumChromeNode`,
+        [apiService.asyncProvisionSeleniumMicroservice, 'chrome-node'],
+        undefined,
+        setProvisionGetSeleniumChromeNodeResponse,
         setSubmitting
     );
     const handleClickDestroySelenium = () => apiRequestHandler(
@@ -236,35 +244,50 @@ export const SeleniumMicroserviceScalingPanel = () => {
     );
 
     return (<>
-        <h2>Selenium Scaling</h2>
+        <h2>Selenium Microservices Scaling</h2>
+        <h3>Hub Provision</h3>
 
-        <button disabled={submitting} onClick={handleClickProvisionSelenium}>Provision selenium</button>
-        <div>{provisionSeleniumResponse}</div>
+        <button disabled={submitting} onClick={handleClickProvisionSeleniumHub}>Provision selenium hub</button>
+        <div>{provisionSeleniumHubResponse}</div>
+
+        <button disabled={submitting} onClick={handleClickProvisionSeleniumChromeNode}>Provision selenium chrome nodes</button>
+        <div>{provisionSeleniumChromeNodeResponse}</div>
 
         <button disabled={submitting} onClick={handleClickDestroySelenium}>Destroy selenium</button>
         <div>{destroySeleniumResponse}</div>
 
 
-        <h2>Selenium Status</h2>
+        <h3>Selenium Microservices Status</h3>
 
         {PollingToggleComponent(disablePolling, setDisablePolling)}
 
-        <button disabled={submitting} onClick={handleClickGetSelenium}>Get selenium</button>
-        {seleniumMicroservice && (seleniumMicroservice.deploymentResult && seleniumMicroservice.serviceResult) ? (<div>
-            {seleniumMicroservice.deploymentResult && (<>
-                <h3>{seleniumMicroservice.deploymentResult.body.metadata.name}</h3>
-                {seleniumMicroservice.deploymentResult.body.status.conditions.map((condition, index) => (<div key={index}>
+        <button disabled={submitting} onClick={handleClickGetSelenium}>Get selenium hub</button>
+        {seleniumMicroservice ? (<div>
+
+            <h4>Hub Status</h4>
+            {seleniumMicroservice.hubDeploymentResult ? (<>
+                <h5>{seleniumMicroservice.hubDeploymentResult.body.metadata.name}</h5>
+                {seleniumMicroservice.hubDeploymentResult.body.status.conditions.map((condition, index) => (<div key={index}>
                     <p>
                         Status: {condition.type} - {condition.message}
                     </p>
                 </div>))}
-            </>)}
-
-            {seleniumMicroservice.serviceResult && (<>
+            </>) : (<div>--</div>)}
+            {seleniumMicroservice.serviceResult ? (<>
                 <h3>{seleniumMicroservice.serviceResult.body.metadata.name}</h3>
                 <div>IP: {seleniumMicroservice.serviceResult.body.spec.clusterIP}</div>
                 <div>Port: {seleniumMicroservice.serviceResult.body.spec.ports.map(port => port.port)}</div>
-            </>)}
+            </>) : (<div>--</div>)}
+
+            <h4>Chrome Node Status</h4>
+            {seleniumMicroservice.chromeNodeDeploymentResult ? (<>
+                <h5>{seleniumMicroservice.chromeNodeDeploymentResult.body.metadata.name}</h5>
+                {seleniumMicroservice.chromeNodeDeploymentResult.body.status.conditions.map((condition, index) => (<div key={index}>
+                    <p>
+                        Status: {condition.type} - {condition.message}
+                    </p>
+                </div>))}
+            </>) : (<div>--</div>)}
         </div>) : (<div>--</div>)}
     </>);
 }
