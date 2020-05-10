@@ -50,7 +50,7 @@ export default function App() {
               <li>
                 <a href={`${process.env.NODE_ENV === 'production' ?
                   apiService.PRODUCTION_API_SERVER_BASE_URL :
-                  apiService.developmentApiServerBaseUrl}:${authCredentials.port}/dashboard?token=${authCredentials.token}`}>Bull Job Queue Dashboard</a>
+                  `${apiService.developmentApiServerBaseUrl}:${authCredentials.port}` }/dashboard?token=${authCredentials.token}`}>Bull Job Queue Dashboard</a>
               </li>
             </ul>
           </nav>
