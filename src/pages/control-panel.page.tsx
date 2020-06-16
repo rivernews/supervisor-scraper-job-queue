@@ -1,12 +1,17 @@
 import React, { useState } from "react";
+import { Button } from "@rmwc/button";
+import '@rmwc/button/styles';
+
 import { apiService } from "../services/apiService";
+import styles from "./control-panel.module.css";
+
 
 export function ControlPanelPage() {
     const [submitting, setSubmitting] = useState(false);
-    return <>
+    return <div className={styles.ControlPanelPage}>
         <h2>Control Panel</h2>
 
-        <button disabled={submitting} type="button" onClick={async () => {
+        <Button danger unelevated disabled={submitting} type="button" onClick={async () => {
             setSubmitting(true);
             try {
                 const res = await apiService.asyncTerminateAllJobs();
@@ -15,9 +20,9 @@ export function ControlPanelPage() {
                 alert(JSON.stringify(error));
             }
             setSubmitting(false);
-        }}>Terminate All Jobs</button>
+        }}>Terminate All Jobs</Button>
 
-        <button disabled={submitting} type="button" onClick={async () => {
+        <Button disabled={submitting} type="button" onClick={async () => {
             setSubmitting(true);
             try {
                 const res = await apiService.asyncResumeAllQueues();
@@ -26,9 +31,9 @@ export function ControlPanelPage() {
                 alert(JSON.stringify(error));
             }
             setSubmitting(false);
-        }}>Resume All Jobs</button>
+        }}>Resume All Jobs</Button>
 
-        <button disabled={submitting} type="button" onClick={async () => {
+        <Button disabled={submitting} type="button" onClick={async () => {
             setSubmitting(true);
             try {
                 const res = await apiService.asyncPauseAllQueues();
@@ -37,9 +42,9 @@ export function ControlPanelPage() {
                 alert(JSON.stringify(error));
             }
             setSubmitting(false);
-        }}>Pause All Jobs</button>
+        }}>Pause All Jobs</Button>
 
-        <button disabled={submitting} type="button" onClick={async () => {
+        <Button unelevated disabled={submitting} type="button" onClick={async () => {
             setSubmitting(true);
             try {
                 const res = await apiService.asyncStartS3Job();
@@ -48,7 +53,7 @@ export function ControlPanelPage() {
                 alert('Error: ' + JSON.stringify(error));
             }
             setSubmitting(false);
-        }}>Start S3 Job</button>
+        }}>Start S3 Job</Button>
 
-    </>
+    </div>
 }

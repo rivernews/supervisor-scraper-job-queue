@@ -1,8 +1,12 @@
 import React from "react";
 import { Formik, FormikHelpers } from 'formik';
+import { TextField } from "@rmwc/textfield";
+import '@rmwc/textfield/styles';
+import { Button } from "@rmwc/button";
+import '@rmwc/button/styles';
+
 import { ScraperCrossRequest } from "./renewal-job-types";
 import { getNestedValueFromName } from "../utilities/formUtilities";
-
 import styles from './renewal-job-form.module.css';
 import { Authenticator } from "../services/authenticate";
 
@@ -104,13 +108,16 @@ export const RenewalJobForm = (props: RenewalJobFormProps) => {
                 /* and other goodies */
             }) => (
                     <form onSubmit={handleSubmit}>
+                        <Button unelevated className={styles.submitButton} type="submit" disabled={isSubmitting}>
+                            Submit
+                        </Button>
                         {inputList.map((inputMeta, index) => (
                             <div
                                 key={index}
                                 className={styles.field}
                             >
-                                <label>{inputMeta.name}: </label>
-                                <input
+                                <TextField
+                                    label={inputMeta.name}
                                     className={styles.input}
                                     type={inputMeta.type}
                                     name={inputMeta.name}
@@ -121,9 +128,9 @@ export const RenewalJobForm = (props: RenewalJobFormProps) => {
                                 {getNestedValueFromName(errors, inputMeta.name) && getNestedValueFromName(touched, inputMeta.name) && getNestedValueFromName(errors, inputMeta.name)}
                             </div>
                         ))}
-                        <button className={styles.submitButton} type="submit" disabled={isSubmitting}>
+                        <Button unelevated className={styles.submitButton} type="submit" disabled={isSubmitting}>
                             Submit
-                        </button>
+                        </Button>
                     </form>
                 )}
         </Formik>

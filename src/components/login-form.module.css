@@ -1,0 +1,12 @@
+.LoginFormField:not(:last-of-type) {
+    margin-bottom: 3vmin;
+}
+
+.LoginFormField :global(.mdc-text-field) {
+    min-width: 50vw;
+    max-width: 90%;
+}
+
+.SubmitButton {
+    margin-top: 5vmin;
+}

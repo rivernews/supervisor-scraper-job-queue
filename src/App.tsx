@@ -6,6 +6,9 @@ import {
   Link
 } from "react-router-dom";
 import { ResumeJob } from "./pages/resume-job";
+import { TabBar, Tab } from "@rmwc/tabs";
+import '@rmwc/tabs/styles';
+import { RMWCProvider } from '@rmwc/provider';
 
 import styles from './App.module.css';
 import { Home } from "./pages/home";
@@ -18,65 +21,72 @@ import { AppContext } from "./services/appService";
 import { Authenticator } from "./services/authenticate";
 
 
-
 export default function App() {
   const [authCredentials, setAuthCredentials] = useState<AuthCredentials>({
     token: Authenticator.token,
     port: Authenticator.port
   });
 
-  return (
-    <AppContext.Provider value={{ authCredentials, setAuthCredentials }} >
-      <Router>
-        <div className={styles.App}>
-          <h2>Navigation</h2>
-          <nav>
-            <ul>
-              <li>
-                <Link to="/">Home</Link>
-              </li>
-              <li>
-                <Link to="/login">Login</Link>
-              </li>
-              <li>
-                <Link to="/k8s">Node scaling</Link>
-              </li>
-              <li>
-                <Link to="/resume-job">Resume Job</Link>
-              </li>
-              <li>
-                <Link to="/control-panel">Job Control Panel</Link>
-              </li>
-              <li>
-                <a href={`${process.env.NODE_ENV === 'production' ?
-                  apiService.PRODUCTION_API_SERVER_BASE_URL :
-                  `${apiService.developmentApiServerBaseUrl}:${authCredentials.port}` }/dashboard?token=${authCredentials.token}`}>Bull Job Queue Dashboard</a>
-              </li>
-            </ul>
-          </nav>
+  const routes = [{
+    to: '/', text: 'Home', icon: 'home'
+  }, {
+    to: '/login', text: 'Login', icon: 'account_circle'
+  }, {
+    to: '/k8s', text: 'Node Scaling', icon: 'cloud_upload'
+  }, {
+    to: '/resume-job', text: 'Create Job', icon: 'assignment'
+  }, {
+    to: '/control-panel', text: 'Queue Control', icon: 'build'
+  }, {
+    href: `${process.env.NODE_ENV === 'production' ?
+      apiService.PRODUCTION_API_SERVER_BASE_URL :
+      `${apiService.developmentApiServerBaseUrl}:${authCredentials.port}`}/dashboard?token=${authCredentials.token}`, text: 'Dashboard',
+    target: '_blank',
+    icon: 'open_in_new'
+  }]
 
-          {/* A <Switch> looks through its children <Route>s and
+  return (
+    <RMWCProvider>
+      <AppContext.Provider value={{ authCredentials, setAuthCredentials }} >
+        <Router>
+          <div className={styles.App}>
+            <nav>
+              <TabBar>
+                {routes.map((r, i) => {
+                  return (
+                    <Tab key={i} tag={Link} to={r.href ? { pathname: r.href } : r.to}
+                      target={r.target}
+                      icon={r.icon}
+                      stacked
+                    >{r.text}</Tab>
+                  )
+                })}
+              </TabBar>
+            </nav>
+
+            {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
-          <Switch>
-            <Route path="/resume-job">
-              <ResumeJob />
-            </Route>
-            <Route path="/control-panel">
-              <ControlPanelPage />
-            </Route>
-            <Route path="/k8s">
-              <NodeScalingPage />
-            </Route>
-            <Route path="/login">
-              <LoginPage />
-            </Route>
-            <Route path="/">
-              <Home />
-            </Route>
-          </Switch>
-        </div>
-      </Router>
-    </AppContext.Provider>
+            <Switch>
+              <Route path="/resume-job">
+                <ResumeJob />
+              </Route>
+              <Route path="/control-panel">
+                <ControlPanelPage />
+              </Route>
+              <Route path="/k8s">
+                <NodeScalingPage />
+              </Route>
+              <Route path="/login">
+                <LoginPage />
+              </Route>
+              <Route path="/">
+                <Home />
+              </Route>
+            </Switch>
+          </div>
+        </Router>
+      </AppContext.Provider>
+    </RMWCProvider>
   );
 }
 

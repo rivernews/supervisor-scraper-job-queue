@@ -10,21 +10,23 @@
 }
 
 .input {
-    margin-top: 1vmin;
+    /* margin-top: 1vmin; */
 
     min-width: 50vw;
-    max-width: 100%;
+    max-width: 90%;
 
-    border-style: solid;
-    border-radius: 1vmin;
+    /* border-style: solid;
+    border-radius: 1vmin; */
 
-    padding: 2vmin;
+    /* padding: 2vmin; */
 
-    font-size: 1.2rem;
+    /* font-size: 1.2rem; */
 }
 
 .submitButton {
-    padding: 1rem;
+    /* padding: 1rem; */
 
-    font-size: 1.2rem;
+    /* font-size: 1.2rem; */
+
+    margin-bottom: 5vmin;
 }

@@ -1,9 +1,16 @@
 import React from "react";
 import { FormikHelpers, Formik } from "formik";
+import { Button } from "@rmwc/button";
+import '@rmwc/button/styles';
+import { TextField } from "@rmwc/textfield";
+import '@rmwc/textfield/styles';
+
 import { getNestedValueFromName } from "../utilities/formUtilities";
 import { Authenticator } from "../services/authenticate";
 import { AuthCredentials } from "../types/auth.types";
 import { useAppContext } from "../services/appService";
+import styles from './login-form.module.css';
+
 
 const inputList = [
     { name: 'token', type: 'text' },
@@ -23,30 +30,30 @@ export const LoginForm = () => {
     const formSubmit = async (values: AuthCredentials, { setSubmitting }: FormikHelpers<AuthCredentials>) => {
         const tokenValue = values.token.trim();
         const portValue = values.port.trim();
-    
+
         if (tokenValue !== '') {
             Authenticator.token = tokenValue;
         }
-    
+
         if (portValue !== '') {
             Authenticator.port = portValue;
         }
-    
+
         alert('Credentials stored');
-    
+
         // store in React Context API
         setAuthCredentials && setAuthCredentials({
             token: tokenValue || '',
             port: portValue || ''
         });
-    
+
         setSubmitting(false);
     }
 
     return <div>
         <Formik
             initialValues={initialValues}
-            validate={() => {}}
+            validate={() => { }}
             onSubmit={formSubmit}
         >
             {({
@@ -63,9 +70,10 @@ export const LoginForm = () => {
                         {inputList.map((inputMeta, index) => (
                             <div
                                 key={index}
+                                className={styles.LoginFormField}
                             >
-                                <label>{inputMeta.name}: </label>
-                                <input
+                                <TextField
+                                    label={inputMeta.name}
                                     type={inputMeta.type}
                                     name={inputMeta.name}
                                     onChange={handleChange}
@@ -75,9 +83,9 @@ export const LoginForm = () => {
                                 {getNestedValueFromName(errors, inputMeta.name) && getNestedValueFromName(touched, inputMeta.name) && getNestedValueFromName(errors, inputMeta.name)}
                             </div>
                         ))}
-                        <button type="submit" disabled={isSubmitting}>
+                        <Button className={styles.SubmitButton} type="submit" disabled={isSubmitting}>
                             Store
-                        </button>
+                        </Button>
                     </form>
                 )}
         </Formik>

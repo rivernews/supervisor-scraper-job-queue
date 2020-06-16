@@ -1,4 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { Theme } from "@rmwc/theme";
+import '@rmwc/theme/styles';
+import { Button } from "@rmwc/button";
+import '@rmwc/button/styles';
+
 import { apiService } from "../services/apiService";
 import { KubernetesNode, SeleniumMicroservice } from "../types/k8s.types";
 
@@ -81,7 +86,7 @@ const PollingToggleComponent = (
     setDisablePollingState: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
     return (<div>
-        <button onClick={() => setDisablePollingState(!disablePollingState)}>Toggle polling</button>
+        <Button   onClick={() => setDisablePollingState(!disablePollingState)}>Toggle polling</Button >
         <span>Polling is {disablePollingState ? 'off' : 'on'}</span>
     </div>)
 }
@@ -161,13 +166,13 @@ export function NodeScalingPanel() {
         <h2>Node Scaling</h2>
         <div>
             <div>{NodeSizeSelector(nodeInstanceSize, setNodeInstanceSize)}</div>
-            <button disabled={submitting} type="button" onClick={handleClickCreateNode}>Create node</button>
+            <Button unelevated disabled={submitting} type="button" onClick={handleClickCreateNode}>Create node</Button >
             <div>
                 {createNodeResponse}
             </div>
         </div>
         <div>
-            <button disabled={submitting} type="button" onClick={handleClickDeleteNodes}>Delete all nodes</button>
+            <Button unelevated danger disabled={submitting} type="button" onClick={handleClickDeleteNodes}>Delete all nodes</Button >
             <div>
                 {deleteAllNodesResponse}
             </div>
@@ -178,7 +183,7 @@ export function NodeScalingPanel() {
 
         {PollingToggleComponent(disablePolling, setDisablePolling)}
 
-        <button disabled={submitting} type="button" onClick={handleClickListNodes}>List nodes</button>
+        <Button   disabled={submitting} type="button" onClick={handleClickListNodes}>List nodes</Button >
         <div>
             {listNodesResponse}
         </div>
@@ -243,17 +248,17 @@ export const SeleniumMicroserviceScalingPanel = () => {
         setSubmitting
     );
 
-    return (<>
+    return (<Theme use='surface'>
         <h2>Selenium Microservices Scaling</h2>
         <h3>Hub Provision</h3>
 
-        <button disabled={submitting} onClick={handleClickProvisionSeleniumHub}>Provision selenium hub</button>
+        <Button unelevated disabled={submitting} onClick={handleClickProvisionSeleniumHub}>Provision selenium hub</Button >
         <div>{provisionSeleniumHubResponse}</div>
 
-        <button disabled={submitting} onClick={handleClickProvisionSeleniumChromeNode}>Provision selenium chrome nodes</button>
+        <Button   disabled={submitting} onClick={handleClickProvisionSeleniumChromeNode}>Provision selenium chrome nodes</Button >
         <div>{provisionSeleniumChromeNodeResponse}</div>
 
-        <button disabled={submitting} onClick={handleClickDestroySelenium}>Destroy selenium</button>
+        <Button danger disabled={submitting} onClick={handleClickDestroySelenium}>Destroy selenium</Button >
         <div>{destroySeleniumResponse}</div>
 
 
@@ -261,7 +266,7 @@ export const SeleniumMicroserviceScalingPanel = () => {
 
         {PollingToggleComponent(disablePolling, setDisablePolling)}
 
-        <button disabled={submitting} onClick={handleClickGetSelenium}>Get selenium hub</button>
+        <Button   disabled={submitting} onClick={handleClickGetSelenium}>Get selenium hub</Button >
         {seleniumMicroservice ? (<div>
 
             <h4>Hub Status</h4>
@@ -289,5 +294,5 @@ export const SeleniumMicroserviceScalingPanel = () => {
                 </div>))}
             </>) : (<div>--</div>)}
         </div>) : (<div>--</div>)}
-    </>);
+    </Theme>);
 }

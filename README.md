@@ -5,3 +5,5 @@ Frontend for scraper supervisor for additional job queue management. [Backend se
 ## Reference
 - [Facebook: create react app github](https://github.com/facebook/create-react-app)
 - [Set typescript with create react app](https://create-react-app.dev/docs/adding-typescript)
+- Styling - using [RMWC](https://rmwc.io/buttons).
+- Icon - [Materials Icon](https://material.io/resources/icons/?icon=assignment&style=baseline)
