@@ -3,6 +3,8 @@ import { Theme } from "@rmwc/theme";
 import '@rmwc/theme/styles';
 import { Button } from "@rmwc/button";
 import '@rmwc/button/styles';
+import { Switch } from "@rmwc/switch";
+import '@rmwc/switch/styles';
 
 import { apiService } from "../services/apiService";
 import { KubernetesNode, SeleniumMicroservice } from "../types/k8s.types";
@@ -86,8 +88,9 @@ const PollingToggleComponent = (
     setDisablePollingState: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
     return (<div>
-        <Button   onClick={() => setDisablePollingState(!disablePollingState)}>Toggle polling</Button >
-        <span>Polling is {disablePollingState ? 'off' : 'on'}</span>
+        <Switch checked={!disablePollingState} onChange={event => setDisablePollingState(!event.currentTarget.checked) } 
+            label={'Polling is ' + (disablePollingState ? 'off' : 'on')}
+        />
     </div>)
 }
 
