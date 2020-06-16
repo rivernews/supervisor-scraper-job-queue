@@ -12,8 +12,6 @@ export function ResumeJob() {
         {Object.keys(responseDisplay).length !== 0 && <div>
             {JSON.stringify(responseDisplay, null, 4)}
         </div>}
-        <h2>Create a New or Renewal Job</h2>
         <RenewalJobForm onReceiveResponse={onReceiveSubmitResponse} />
-
     </div>;
 }

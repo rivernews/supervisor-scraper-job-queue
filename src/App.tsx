@@ -32,9 +32,9 @@ export default function App() {
   }, {
     to: '/login', text: 'Login', icon: 'account_circle'
   }, {
-    to: '/k8s', text: 'Node Scaling', icon: 'cloud_upload'
-  }, {
     to: '/resume-job', text: 'Create Job', icon: 'assignment'
+  }, {
+    to: '/k8s', text: 'Node Scaling', icon: 'cloud_upload'
   }, {
     to: '/control-panel', text: 'Queue Control', icon: 'build'
   }, {

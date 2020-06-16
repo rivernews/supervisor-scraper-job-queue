@@ -65,10 +65,10 @@ const formSubmit = async (values: typeof initialValues, { setSubmitting }: Formi
 
         localStorage.setItem(tokenCacheKey, values.token);
 
-        alert('Submit success! Job number ' + json.id);
         setSubmitting(false);
         return json;
     } else {
+        alert('Submit failed!')
         return res;
     }
 }
@@ -82,6 +82,8 @@ export interface RenewalJobFormProps {
 // https://jaredpalmer.com/formik/docs/overview
 export const RenewalJobForm = (props: RenewalJobFormProps) => {
     return <div className={styles.renewalForm}>
+        <h2>Create a New or Renewal Job</h2>
+
         <Formik
             initialValues={{
                 ...initialValues,
